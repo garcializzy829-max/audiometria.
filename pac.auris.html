@@ -1,0 +1,2444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AURIS PRO</title>
+
+<!-- LIBRERÍAS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+
+<!-- FUENTE -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* SIDEBAR */
+/* SIDEBAR */
+.sidebar{
+width:220px;
+height:100vh;
+position:fixed;
+top:0;
+left:0;
+background:#0b1f44;
+color:white;
+padding:20px;
+transition:transform 0.3s ease;
+z-index:999;
+}
+
+/* OCULTO */
+.sidebar.oculto{
+transform:translateX(-100%);
+}
+
+/* CONTENIDO */
+.main{
+padding:20px;
+transition:0.3s;
+}
+
+/* BOTÓN */
+#btnMenu{
+position:fixed;
+top:12px;
+left:12px;
+z-index:10000;
+background:#1e3a8a;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:6px;
+cursor:pointer;
+}
+.main.full{
+margin-left:0;
+}
+
+
+/* CUANDO EL MENU ESTÁ CERRADO */
+.main.full{
+margin-left:0;
+}
+
+/* BOTÓN */
+
+    .imagen-card{
+width:140px;
+background:white;
+padding:10px;
+border-radius:12px;
+box-shadow:0 4px 10px rgba(0,0,0,.1);
+text-align:center;
+}
+
+.imagen-card img{
+width:100%;
+height:100px;
+object-fit:cover;
+border-radius:10px;
+cursor:pointer;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+.kpi{
+transition: all .3s ease;
+cursor:pointer;
+}
+
+.kpi:hover{
+transform: translateY(-6px) scale(1.03);
+box-shadow:0 15px 35px rgba(0,0,0,.2);
+}
+
+/* animación pulso */
+@keyframes pulse {
+0% { box-shadow:0 0 0 0 rgba(37,99,235,.5); }
+70% { box-shadow:0 0 0 15px rgba(37,99,235,0); }
+100% { box-shadow:0 0 0 0 rgba(37,99,235,0); }
+}
+
+.kpi:nth-child(2){
+animation: pulse 2s infinite;
+}
+
+body{
+background:#edf2f7;
+display:flex;
+overflow-x:hidden;
+color:#0f172a;
+font-size:13px;
+}
+/* ===== TIPOGRAFÍA PRO NIVEL APP ===== */
+
+body{
+font-family:'Manrope', sans-serif;
+color:#0f172a;
+background:#f1f5f9;
+}
+
+/* TÍTULOS */
+h1,h2,h3{
+font-weight:600;
+letter-spacing:.2px;
+color:#afbfe4;
+}
+
+/* SUBTÍTULOS */
+h4{
+font-weight:500;
+color:#334155;
+}
+
+/* TEXTO GENERAL */
+p,span,label{
+font-size:14px;
+color:#e2eeff;
+}
+
+/* INPUTS */
+input{
+font-family:'Manrope', sans-serif;
+font-size:14px;
+}
+
+/* BOTONES */
+.btn{
+font-family:'Manrope', sans-serif;
+font-weight:600;
+letter-spacing:.3px;
+}
+
+/* NOMBRES DE PACIENTES (SE VEN MÁS PRO) */
+.imagen-card h4{
+font-size:14px;
+font-weight:600;
+color:#0f172a;
+}
+
+/* SCROLL */
+
+::-webkit-scrollbar{
+width:8px;
+height:8px;
+}
+
+::-webkit-scrollbar-thumb{
+background:#1d4ed8;
+border-radius:20px;
+}
+
+/* INICIO */
+
+#inicio{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(135deg,#0f172a,#1d4ed8);
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:9999;
+color:white;
+}
+
+#inicio h1{
+font-size:48px;
+margin-bottom:10px;
+}
+
+#inicio p{
+font-size:15px;
+margin-bottom:25px;
+}
+
+#inicio button{
+padding:14px 35px;
+border:none;
+border-radius:50px;
+background:white;
+color:#1d4ed8;
+font-size:14px;
+font-weight:700;
+cursor:pointer;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:220px;
+height:100vh;
+position:fixed;
+background:linear-gradient(180deg,#0b1f44,#102a5c);
+padding:18px;
+overflow:auto;
+}
+
+.sidebar h2{
+color:#e8ebee;
+margin-bottom:24px;
+font-size:20px;
+text-align:center;
+}
+
+.sidebar button{
+width:100%;
+padding:11px;
+margin:6px 0;
+border:none;
+border-radius:12px;
+background:#16346d;
+color:white;
+cursor:pointer;
+font-size:13px;
+transition:.3s;
+}
+
+.sidebar button:hover{
+background:#2563eb;
+}
+
+/* MAIN */
+
+.main{
+margin-left:220px;
+padding:18px;
+width:100%;
+}
+
+/* TOPBAR */
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:18px;
+flex-wrap:wrap;
+gap:10px;
+}
+
+.topbar h1{
+font-size:24px;
+}
+
+/* CARD */
+
+.card{
+background:white;
+padding:16px;
+border-radius:18px;
+box-shadow:0 8px 24px rgba(15,23,42,.05);
+margin-bottom:18px;
+border:1px solid #e2e8f0;
+}
+
+/* GRID */
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+gap:12px;
+}
+
+/* INPUTS */
+
+input,select{
+padding:10px 12px;
+border-radius:12px;
+border:1px solid #dbe2ea;
+background:#f8fafc;
+width:100%;
+font-size:13px;
+}
+
+input:focus,
+select:focus{
+outline:none;
+border-color:#2563eb;
+}
+
+/* BOTONES */
+
+/* ===== BOTONES PRO ===== */
+
+.btn{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:6px;
+
+padding:10px 16px;
+border:none;
+border-radius:12px;
+
+font-size:13px;
+font-weight:600;
+letter-spacing:.3px;
+
+cursor:pointer;
+transition:all .25s ease;
+
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+color:white;
+
+box-shadow:0 6px 15px rgba(37,99,235,.25);
+}
+
+/* HOVER */
+.btn:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 20px rgba(37,99,235,.35);
+}
+
+/* CLICK */
+.btn:active{
+transform:scale(0.96);
+box-shadow:0 3px 10px rgba(0,0,0,.2);
+}
+
+/* ===== BOTÓN VER INFO ===== */
+.btn.info{
+background:linear-gradient(135deg,#3b82f6,#2563eb);
+}
+
+/* ===== BOTÓN ELIMINAR ===== */
+.danger{
+background:linear-gradient(135deg,#3c879e,#2693dc);
+box-shadow:0 6px 15px rgba(239,68,68,.3);
+}
+
+.danger:hover{
+box-shadow:0 10px 20px rgba(239,68,68,.4);
+}
+
+/* ===== BOTÓN SECUNDARIO (OPCIONAL) ===== */
+.btn.secondary{
+background:#e2e8f0;
+color:#1e293b;
+box-shadow:none;
+}
+
+.btn.secondary:hover{
+background:#cbd5f5;
+}
+
+/* ===== EFECTO ICONO AUTOMÁTICO ===== */
+
+/* Ver info */
+.btn.info::before{
+content:"👁";
+font-size:12px;
+}
+
+/* Eliminar */
+.danger::before{
+content:"🗑";
+font-size:12px;
+}
+
+/* Subir */
+.btn.upload::before{
+content:"⬆";
+font-size:12px;
+}
+
+
+
+/* KPIS */
+
+.kpis{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:14px;
+margin-bottom:18px;
+}
+
+.kpi{
+padding:18px;
+border-radius:20px;
+color:white;
+cursor:pointer;
+}
+
+.kpi h3{
+font-size:12px;
+margin-bottom:6px;
+}
+
+.kpi h1{
+font-size:28px;
+}
+
+.kpi:nth-child(1){
+background:linear-gradient(135deg,#1d4ed8,#2563eb);
+}
+
+.kpi:nth-child(2){
+background:linear-gradient(135deg,#2563eb,#3b82f6);
+}
+
+.kpi:nth-child(3){
+background:linear-gradient(135deg,#1e40af,#2563eb);
+}
+
+.kpi:nth-child(4){
+background:linear-gradient(135deg,#0f172a,#1e3a8a);
+}
+
+.kpi:nth-child(5){
+background:linear-gradient(135deg,#06b6d4,#0891b2);
+}
+
+/* TABLAS */
+
+table{
+width:100%;
+border-collapse:collapse;
+font-size:12px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+font-size:12px;
+table-layout:fixed;
+}
+
+th{
+background:#1d4ed8;
+color:white;
+padding:12px;
+position:sticky;
+top:0;
+}
+
+td{
+padding:9px;
+border-bottom:1px solid #e2e8f0;
+background:white;
+word-wrap:break-word;
+overflow-wrap:break-word;
+max-width:120px;
+}
+
+.card{
+overflow-x:auto;
+}
+
+table{
+min-width:1000px;
+}
+
+
+tr:hover td{
+background:#f8fbff;
+}
+
+td[contenteditable="true"]:focus{
+outline:none;
+background:#dbeafe;
+}
+
+/* SECCIONES */
+
+.section{
+display:none;
+}
+
+.active{
+display:block;
+}
+
+
+tr.destacado{
+background:#3b82f6 !important;
+color:white;
+transform:scale(1.02);
+box-shadow:0 0 15px rgba(59,130,246,0.7);
+transition:0.3s;
+}
+@media(max-width:768px){
+.sidebar{
+position:fixed;
+height:100%;
+z-index:999;
+}
+}
+
+
+#btnMenu:hover{
+background:#142c6b;
+}
+/* ===== MEJORA ANEXOS SIN CAMBIAR FUNCIONES ===== */
+
+#anexos .card{
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+/* INPUTS MÁS LIMPIOS */
+#anexos input{
+background:#f8fafc;
+border:1px solid #e2e8f0;
+transition:0.3s;
+}
+
+#anexos input:focus{
+border-color:#2563eb;
+box-shadow:0 0 0 3px rgba(37,99,235,.15);
+}
+
+/* BOTÓN MÁS PRO */
+#anexos .btn{
+background:linear-gradient(135deg,#2563eb,#3b82f6);
+box-shadow:0 6px 15px rgba(37,99,235,.3);
+transition:0.3s;
+}
+
+#anexos .btn:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 20px rgba(37,99,235,.4);
+}
+
+/* ===== GALERÍA ===== */
+
+#galeria{
+display:grid !important;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:18px !important;
+}
+
+/* TARJETAS DE IMAGEN */
+.imagen-card{
+width:100% !important;
+border-radius:18px;
+overflow:hidden;
+padding:0;
+transition:0.3s;
+position:relative;
+}
+
+.imagen-card:hover{
+transform:translateY(-6px) scale(1.02);
+box-shadow:0 15px 30px rgba(0,0,0,.2);
+}
+
+/* IMAGEN */
+.imagen-card img{
+height:150px;
+border-radius:0;
+}
+
+/* INFO */
+.imagen-card h4{
+font-size:13px;
+margin:10px 0;
+color:#0f172a;
+}
+
+/* BOTONES DENTRO */
+.imagen-card .btn{
+font-size:12px;
+border-radius:10px;
+}
+
+/* BOTÓN ELIMINAR */
+.imagen-card .danger{
+background:#1e3a8a;
+}
+
+/* EFECTO OVERLAY (PRO) */
+.imagen-card::after{
+content:"👁 Ver";
+position:absolute;
+top:10px;
+right:10px;
+background:#2563eb;
+color:white;
+font-size:11px;
+padding:5px 8px;
+border-radius:8px;
+opacity:0;
+transition:0.3s;
+}
+
+.imagen-card:hover::after{
+opacity:1;
+}
+
+/* TÍTULO MÁS BONITO */
+#anexos h2{
+font-size:20px;
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+/* GRID MÁS ORDENADO */
+#anexos .grid{
+gap:15px;
+}
+
+
+</style>
+</head>
+
+<body>
+ <button onclick="toggleMenu()" id="btnMenu">☰</button>
+<!-- INICIO -->
+
+<div id="inicio">
+   
+
+<h1>AUDIOMETRIA</h1> 
+
+
+<p> SISTEMA PACIENTES AURIS</p>
+
+<button onclick="entrar()">
+Entrar al sistema
+</button>
+
+</div>
+
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h2>AUDIOMETRIA</h2>
+
+<button onclick="volverInicio()">
+🏠 Inicio
+</button>
+<button onclick="show('dashboard')">📊 Datos Pacientes</button>
+<button onclick="show('registro')">👨‍⚕️ Pacientes</button>
+<button onclick="show('pacientes')">👨‍⚕️ Registro pacientes</button>
+<button onclick="show('auriculares')">🎧 Auriculares</button>
+<button onclick="show('anexos')">📎 Anexos</button>
+<button onclick="modoOscuro()">🌙 Modo Oscuro</button>
+
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+<div class="topbar">
+
+<h1>Panel Clínico</h1>
+
+<div id="fechaActual"></div>
+
+</div>
+
+<!-- DASHBOARD -->
+
+<div id="dashboard" class="section active">
+
+<div class="card">
+
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+
+<h2>Datos pacientes</h2>
+
+<select id="filtroMes" onchange="filtrarMes()">
+
+<option value="">📅 Todos los meses</option>
+
+<option value="0">Enero</option>
+<option value="1">Febrero</option>
+<option value="2">Marzo</option>
+<option value="3">Abril</option>
+<option value="4">Mayo</option>
+<option value="5">Junio</option>
+<option value="6">Julio</option>
+<option value="7">Agosto</option>
+<option value="8">Septiembre</option>
+<option value="9">Octubre</option>
+<option value="10">Noviembre</option>
+<option value="11">Diciembre</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div class="kpis">
+
+<div class="kpi" onclick="filtrarEstado('')">
+<h3>Total Pacientes</h3>
+<h1 id="k1">0</h1>
+</div>
+
+<div class="kpi" onclick="filtrarEstado('En proceso')">
+<h3>En proceso</h3>
+<h1 id="k2">0</h1>
+</div>
+
+<div class="kpi" onclick="filtrarEstado('Ayuda completada')">
+<h3>Completados</h3>
+<h1 id="k3">0</h1>
+</div>
+
+<div class="kpi" onclick="filtrarEstado('Espera')">
+<h3>En espera</h3>
+<h1 id="k4">0</h1>
+</div>
+
+<div class="kpi" onclick="filtrarEstado('Cita agendada')">
+<h3>Citas</h3>
+<h1 id="k5">0</h1>
+</div>
+
+</div>
+
+<!-- GRAFICA DASHBOARD -->
+
+<div class="card">
+
+<h3 style="margin-bottom:15px">
+📊 ESTADISTICA PACIENTES AURIS
+</h3>
+
+<canvas id="chart" style="max-height:250px;"></canvas>
+
+</div>
+
+<!-- TABLA DASHBOARD -->
+
+<div class="card" style="overflow:auto;max-height:420px">
+
+<h3 style="margin-bottom:15px">
+📋 Pacientes Registrados
+</h3>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Nombre</th>
+<th>Edad</th>
+<th>ID</th>
+<th>Residencia</th>
+<th>Teléfono</th>
+<th>Proyecto</th>
+<th>Fecha de entrega</th>
+<th>Estado</th>
+</tr>
+
+</thead>
+
+<tbody id="tablaDashboard"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- Registro pacientes -->
+
+<div id="pacientes" class="section">
+
+<div class="card">
+
+<h2 style="margin-bottom:15px">
+👨‍⚕️ Gestión de Pacientes
+</h2>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+
+<select id="filtroMesPacientes" onchange="filtrarMesPacientes()">
+
+<option value="">📅 Seleccionar mes</option>
+
+<option value="0">Enero</option>
+<option value="1">Febrero</option>
+<option value="2">Marzo</option>
+<option value="3">Abril</option>
+<option value="4">Mayo</option>
+<option value="5">Junio</option>
+<option value="6">Julio</option>
+<option value="7">Agosto</option>
+<option value="8">Septiembre</option>
+<option value="9">Octubre</option>
+<option value="10">Noviembre</option>
+<option value="11">Diciembre</option>
+
+</select>
+
+
+
+</div>
+
+<div class="grid">
+
+<input id="nombre" placeholder="Nombre">
+<input id="edad" placeholder="Edad">
+<input id="identidad" placeholder="Identidad">
+<input id="residencia" placeholder="Residencia">
+<input id="encargado" placeholder="Encargado">
+<input id="telefono" placeholder="Teléfono">
+<input id="proyecto" placeholder="Proyecto">
+<input id="fecha" type="date">
+
+<select id="cita">
+<option>En proceso</option>
+<option>Ayuda completada</option>
+<option>Cita agendada</option>
+<option>Espera</option>
+</select>
+
+<input id="observacion" placeholder="Observación">
+
+
+</div>
+
+<br>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+
+<button class="btn primary" onclick="guardar()">
+💾 Guardar
+</button>
+
+<button class="btn info" onclick="descargarExcel()">
+📥 Exportar Excel
+</button>
+
+</div>
+
+</div>
+
+<!-- GRAFICA PACIENTES -->
+
+<div class="card">
+
+<h3 style="margin-bottom:15px">
+📈 Distribución de Pacientes
+</h3>
+
+<canvas id="chartPacientes" style="max-height:240px;"></canvas>
+
+</div>
+
+<div class="card" style="overflow:auto;max-height:500px">
+    <input id="buscar" placeholder="🔎 Buscar paciente..." oninput="render()"> <br><br><br>
+  
+<table id="tabla">
+
+<thead>
+
+<tr>
+<th>Nombre</th>
+<th>Edad</th>
+<th>ID</th>
+<th>Residencia</th>
+<th>Encargado</th>
+<th>Teléfono</th>
+<th>Proyecto</th>
+<th>Fecha</th>
+<th>Estado</th>
+<th>Observación</th>
+<th>Acción</th>
+</tr>
+
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+</div>
+
+</div>
+ <!-- PACIENTES -->
+<div id="registro" class="section">
+
+<div class="card">
+
+<h2 style="margin-bottom:15px">
+👨‍⚕️ Gestión de Pacientes
+</h2>
+<br>
+
+<!-- GRAFICA PACIENTES -->
+
+<div class="card" style="overflow:auto;max-height:500px">
+    <input id="buscarRegistro" placeholder="🔎 Buscar paciente..." oninput="renderRegistro()">
+<br><br><br>
+  
+<table id="tablaRegistro">
+
+<thead>
+
+<tr>
+<th>Nombre</th>
+<th>Edad</th>
+<th>ID</th>
+<th>Residencia</th>
+<th>Encargado</th>
+<th>Teléfono</th>
+<th>Proyecto</th>
+<th>Fecha</th>
+<th>Estado</th>
+<th>Observación</th>
+<th>Acción</th>
+</tr>
+
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+</div>
+
+</div>
+</div>
+
+<!-- ANEXOS -->
+
+<div id="anexos" class="section">
+
+<div class="card">
+
+<h2 style="margin-bottom:15px">
+📎 Anexos
+</h2>
+
+<div class="grid">
+
+<input type="text"
+id="nombreImagen"
+placeholder="Nombre del paciente">
+
+<input type="file"
+id="archivo"
+accept="image/*">
+
+<input type="text"
+id="identidadImagen"
+placeholder="Confirmar identidad del paciente">
+
+</div>
+
+<br>
+
+<button class="btn info" onclick="subirImagen()">
+Subir Imagen
+</button>
+
+</div>
+
+<div class="card">
+
+<div id="galeria" style="
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+"></div>
+
+</div>
+
+
+</div>
+  
+<!-- AURICULARES -->
+
+<div id="auriculares" class="section">
+
+<div class="card">
+
+<h2 style="margin-bottom:15px">
+🎧 Gestión de Auriculares
+</h2>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+
+<select id="filtroMesAuri" onchange="filtrarMesAuriculares()">
+
+<option value="">📅 Seleccionar mes</option>
+
+<option value="0">Enero</option>
+<option value="1">Febrero</option>
+<option value="2">Marzo</option>
+<option value="3">Abril</option>
+<option value="4">Mayo</option>
+<option value="5">Junio</option>
+<option value="6">Julio</option>
+<option value="7">Agosto</option>
+<option value="8">Septiembre</option>
+<option value="9">Octubre</option>
+<option value="10">Noviembre</option>
+<option value="11">Diciembre</option>
+
+</select>
+
+</div>
+
+<div class="grid">
+
+<input id="marcaAuri" placeholder="Marca">
+<input id="modeloAuri" placeholder="Modelo">
+<input id="serieAuri" placeholder="Número de serie">
+<input id="pacienteAuri" placeholder="Paciente asignado">
+<input id="cantidadAuri" type="number" placeholder="Cantidad">
+<input id="fechaIngresoAuri" type="date">
+
+<select id="estadoAuri">
+<option>Disponible</option>
+<option>Entregado</option>
+<option>Mantenimiento</option>
+</select>
+
+<input id="obsAuri" placeholder="Observación">
+
+</div>
+
+<br>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+
+<button class="btn primary" onclick="guardarAuricular()">
+💾 Guardar
+</button>
+
+<button class="btn info" onclick="exportarAuricularesExcel()">
+📥 Exportar Excel
+</button>
+
+
+</div>
+
+</div>
+
+<!-- KPIS -->
+
+<div class="kpis">
+
+<div class="kpi" onclick="filtrarEstadoAuri('')">
+<h3>Total</h3>
+<h1 id="a1">0</h1>
+</div>
+
+<div class="kpi" onclick="filtrarEstadoAuri('Disponible')">
+<h3>Disponibles</h3>
+<h1 id="a2">0</h1>
+</div>
+
+<div class="kpi" onclick="filtrarEstadoAuri('Entregado')">
+<h3>Entregados</h3>
+<h1 id="a3">0</h1>
+</div>
+
+<div class="kpi" onclick="filtrarEstadoAuri('Mantenimiento')">
+<h3>Mantenimiento</h3>
+<h1 id="a4">0</h1>
+</div>
+
+</div>
+
+<!-- GRAFICA -->
+
+<div class="card">
+
+<h3 style="margin-bottom:15px">
+📊 Estadísticas de Auriculares
+</h3>
+
+<canvas id="graficaAuriculares" style="max-height:250px;"></canvas>
+
+</div>
+
+<!-- TABLA -->
+
+<div class="card" style="overflow:auto;max-height:500px">
+
+<input
+id="buscarAuricular"
+placeholder="🔎 Buscar auricular..."
+oninput="mostrarAuriculares()">
+
+<br><br>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Marca</th>
+<th>Modelo</th>
+<th>Serie</th>
+<th>Paciente</th>
+<th>Estado</th>
+<th>Cantidad</th>
+<th>Fecha de ingreso</th>
+<th>Observación</th>
+<th>Acción</th>
+</tr>
+
+</thead>
+
+<tbody id="tablaAuriculares"></tbody>
+
+</table>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- VISOR -->
+
+<div id="visor" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.92);
+justify-content:center;
+align-items:center;
+z-index:9999;
+cursor:pointer;
+">
+
+<img id="imgGrande" style="
+max-width:90%;
+max-height:90%;
+border-radius:14px;
+">
+
+
+
+</div>
+
+
+
+</div>
+
+
+<script>
+
+/* VARIABLES */
+
+let pacientes = JSON.parse(localStorage.getItem("p")) || [];
+let imagenes = JSON.parse(localStorage.getItem("imagenes")) || [];
+
+let mesFiltro = "";
+let mesFiltroPacientes = "";
+let filtroEstadoGlobal = "";
+
+let chart;
+let chartPacientes;
+let dark=false;
+
+/* FECHA */
+
+document.getElementById("fechaActual").innerHTML =
+new Date().toLocaleDateString('es-HN',{
+weekday:'long',
+year:'numeric',
+month:'long',
+day:'numeric'
+});
+
+/* ENTRAR */
+
+function entrar(){
+document.getElementById("inicio").style.display="none";
+document.getElementById("btnMenu").style.display="block"; // 👈 aparece aquí
+}
+
+
+function toggleMenu(){
+const sidebar = document.querySelector(".sidebar");
+const btn = document.getElementById("btnMenu");
+
+sidebar.classList.toggle("oculto");
+
+btn.innerHTML = sidebar.classList.contains("oculto") ? "☰" : "✖";
+}
+
+/* SHOW */
+
+function show(id){
+
+document.querySelectorAll(".section")
+.forEach(s=>s.classList.remove("active"));
+
+document.getElementById(id)
+.classList.add("active");
+
+
+if(id === "registro"){
+renderRegistro();
+}
+
+}
+
+function volverInicio(){
+
+/* mostrar pantalla inicial */
+document.getElementById("inicio").style.display = "flex";
+
+/* ocultar menú lateral */
+document.querySelector(".sidebar")
+.classList.add("oculto");
+
+/* ocultar botón X */
+document.getElementById("btnMenu")
+.innerHTML = "☰";
+
+/* volver al dashboard */
+show('dashboard');
+
+/* limpiar filtros */
+filtroEstadoGlobal = "";
+mesFiltro = "";
+
+/* reset selects */
+document.getElementById("filtroMes").value = "";
+
+/* actualizar */
+update();
+
+}
+
+/* GUARDAR */
+
+function guardar(){
+
+let mesRegistro =
+document.getElementById("filtroMesPacientes").value;
+
+if(mesRegistro===""){
+alert("Selecciona el mes");
+return;
+}
+
+if(nombre.value===""){
+alert("Ingresa el nombre");
+return;
+}
+
+pacientes.push({
+
+nombre:nombre.value,
+edad:edad.value,
+identidad:identidad.value,
+residencia:residencia.value,
+encargado:encargado.value,
+telefono:telefono.value,
+proyecto:proyecto.value,
+fecha:fecha.value,
+mesRegistro:mesRegistro,
+estado:cita.value,
+obs:observacion.value
+
+});
+
+localStorage.setItem(
+"p",
+JSON.stringify(pacientes)
+);
+
+document.querySelectorAll("#pacientes input")
+.forEach(i=>i.value="");
+
+update();
+
+alert("Paciente guardado correctamente");
+
+}
+
+/* EDITAR */
+
+function edit(i,campo,valor){
+
+pacientes[i][campo]=valor;
+
+localStorage.setItem(
+"p",
+JSON.stringify(pacientes)
+);
+
+}
+
+/* ELIMINAR */
+
+function delPac(i){
+
+if(confirm("¿Eliminar paciente?")){
+
+pacientes.splice(i,1);
+
+localStorage.setItem(
+"p",
+JSON.stringify(pacientes)
+);
+
+update();
+
+}
+
+}
+
+/* FILTROS */
+
+function filtrarMes(){
+
+mesFiltro =
+document.getElementById("filtroMes").value;
+
+update();
+
+}
+
+function filtrarMesPacientes(){
+
+mesFiltroPacientes =
+document.getElementById("filtroMesPacientes").value;
+
+render();
+
+}
+
+function filtrarEstado(estado){
+
+filtroEstadoGlobal = estado;
+
+/* FILTRAR */
+
+let lista = pacientes.filter(p=>{
+
+let okMes = true;
+let okEstado = true;
+
+if(mesFiltro !== ""){
+okMes = p.mesRegistro == mesFiltro;
+}
+
+if(filtroEstadoGlobal !== ""){
+okEstado = p.estado == filtroEstadoGlobal;
+}
+
+return okMes && okEstado;
+
+});
+
+/* TABLA */
+renderDashboardTable();
+
+/* GRAFICA */
+chartUpdate(lista);
+
+/* KPIS DEL MES */
+
+let listaMes = pacientes.filter(p=>{
+
+if(mesFiltro === ""){
+return true;
+}
+
+return p.mesRegistro == mesFiltro;
+
+});
+
+k1.innerText = listaMes.length;
+
+k2.innerText =
+listaMes.filter(p=>p.estado=="En proceso").length;
+
+k3.innerText =
+listaMes.filter(p=>p.estado=="Ayuda completada").length;
+
+k4.innerText =
+listaMes.filter(p=>p.estado=="Espera").length;
+
+k5.innerText =
+listaMes.filter(p=>p.estado=="Cita agendada").length;
+
+}
+/* RENDER */
+
+function render(){
+
+let t=document.querySelector("#tabla tbody");
+
+t.innerHTML="";
+
+let bus=(buscar.value||"")
+.toLowerCase();
+
+pacientes.forEach((p,i)=>{
+
+let okBus =
+(p.nombre || "").toLowerCase().includes(bus) ||
+(p.identidad || "").toLowerCase().includes(bus) ||
+(p.telefono || "").toLowerCase().includes(bus);
+
+let okMes=true;
+
+if(mesFiltroPacientes!==""){
+okMes=p.mesRegistro==mesFiltroPacientes;
+}
+
+if(okBus && okMes){
+
+t.innerHTML += `
+
+<tr>
+
+<td onclick="verImagenPaciente('${p.identidad}')"
+style="cursor:pointer;color:#2563eb;font-weight:600;">
+${p.nombre||""}
+</td>
+
+<td contenteditable="true"
+onblur="edit(${i},'edad',this.innerText.trim())">
+${p.edad||""}
+</td>
+
+<td contenteditable="true"
+onblur="edit(${i},'identidad',this.innerText.trim())">
+${p.identidad||""}
+</td>
+
+<td contenteditable="true"
+onblur="edit(${i},'residencia',this.innerText.trim())">
+${p.residencia||""}
+</td>
+
+<td contenteditable="true"
+onblur="edit(${i},'encargado',this.innerText.trim())">
+${p.encargado||""}
+</td>
+
+<td contenteditable="true"
+onblur="edit(${i},'telefono',this.innerText.trim())">
+${p.telefono||""}
+</td>
+
+<td contenteditable="true"
+onblur="edit(${i},'proyecto',this.innerText.trim())">
+${p.proyecto||""}
+</td>
+
+<td>
+<input type="date"
+value="${p.fecha||""}"
+onchange="edit(${i},'fecha',this.value)">
+</td>
+
+<td>
+
+<select onchange="edit(${i},'estado',this.value);update()">
+
+<option value="En proceso"
+${p.estado=="En proceso"?"selected":""}>
+En proceso
+</option>
+
+<option value="Ayuda completada"
+${p.estado=="Ayuda completada"?"selected":""}>
+Ayuda completada
+</option>
+
+<option value="Cita agendada"
+${p.estado=="Cita agendada"?"selected":""}>
+Cita agendada
+</option>
+
+<option value="Espera"
+${p.estado=="Espera"?"selected":""}>
+Espera
+</option>
+
+</select>
+
+</td>
+
+<td contenteditable="true"
+onblur="edit(${i},'obs',this.innerText.trim())">
+${p.obs||""}
+</td>
+
+
+<td>
+
+<button class="btn danger"
+onclick="delPac(${i})">
+Eliminar
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+}
+
+});
+
+}
+
+function verImagenPaciente(id){
+
+let img = imagenes.find(i => i.id == id);
+
+if(img){
+verImagen(img.imagen);
+}else{
+alert("Este paciente no tiene imagen");
+}
+
+}
+function renderRegistro(){
+
+let t = document.querySelector("#tablaRegistro tbody");
+t.innerHTML = "";
+
+let bus = (document.getElementById("buscarRegistro").value || "").toLowerCase();
+
+pacientes.forEach((p,i)=>{
+
+let okBus = (p.nombre || "").toLowerCase().includes(bus);
+
+if(okBus){
+
+t.innerHTML += `
+
+<tr>
+
+<td>${p.nombre || ""}</td>
+<td>${p.edad || ""}</td>
+<td>${p.identidad || ""}</td>
+<td>${p.residencia || ""}</td>
+<td>${p.encargado || ""}</td>
+<td>${p.telefono || ""}</td>
+<td>${p.proyecto || ""}</td>
+<td>${p.fecha || ""}</td>
+<td>${p.estado || ""}</td>
+<td>${p.obs || ""}</td>
+
+
+<td>
+<button class="btn info"
+onclick="buscarPacientePorID('${p.identidad}')">
+Ver
+</button>
+</td>
+
+</tr>
+
+`;
+
+}
+
+});
+
+}
+
+/* TABLA DASHBOARD */
+
+function renderDashboardTable(){
+
+let t=document.getElementById("tablaDashboard");
+
+t.innerHTML="";
+
+pacientes.forEach(p=>{
+
+let okMes=true;
+let okEstado=true;
+
+if(mesFiltro!==""){
+okMes=p.mesRegistro==mesFiltro;
+}
+
+if(filtroEstadoGlobal!==""){
+okEstado=p.estado==filtroEstadoGlobal;
+}
+
+if(okMes && okEstado){
+
+t.innerHTML += `
+
+<tr>
+
+<td>${p.nombre || ""}</td>
+<td>${p.edad || ""}</td>
+<td>${p.identidad || ""}</td>
+<td>${p.residencia || ""}</td>
+<td>${p.telefono || ""}</td>
+<td>${p.proyecto || ""}</td>
+<td>${p.fecha || ""}</td>
+<td>${p.estado || ""}</td>
+
+</tr>
+
+`;
+
+}
+
+});
+
+}
+
+/* UPDATE */
+
+function update(){
+
+/* FILTRAR POR MES */
+
+let lista = pacientes.filter(p=>{
+
+if(mesFiltro === ""){
+return true;
+}
+
+return p.mesRegistro == mesFiltro;
+
+});
+
+/* KPIS */
+
+k1.innerText = lista.length;
+
+k2.innerText =
+lista.filter(p=>p.estado=="En proceso").length;
+
+k3.innerText =
+lista.filter(p=>p.estado=="Ayuda completada").length;
+
+k4.innerText =
+lista.filter(p=>p.estado=="Espera").length;
+
+k5.innerText =
+lista.filter(p=>p.estado=="Cita agendada").length;
+
+/* TABLA */
+
+renderDashboardTable();
+
+/* GRAFICA */
+
+chartUpdate(lista);
+
+/* TABLA PACIENTES */
+
+render();
+
+/* GRAFICA PACIENTES */
+
+actualizarGraficaPacientes();
+
+}
+/* GRAFICA DASHBOARD */
+
+function chartUpdate(lista){
+
+let m=[0,0,0,0];
+
+lista.forEach(p=>{
+
+if(p.estado=="En proceso") m[0]++;
+if(p.estado=="Ayuda completada") m[1]++;
+if(p.estado=="Cita agendada") m[2]++;
+if(p.estado=="Espera") m[3]++;
+
+});
+
+if(chart) chart.destroy();
+
+chart=new Chart(
+document.getElementById("chart"),
+{
+
+type:"bar",
+
+data:{
+
+labels:[
+"Proceso",
+"Completados",
+"Citas",
+"Espera"
+],
+
+datasets:[{
+label:"Pacientes",
+data:m,
+backgroundColor:[
+"#2563eb", // En proceso
+"#1d4ed8", // Completados
+"#06b6d4", // Citas
+"#0f172a"  // Espera
+],
+borderRadius:10
+}]
+
+},
+
+options:{
+responsive:true,
+plugins:{
+legend:{
+display:false
+}
+}
+}
+
+});
+
+}
+
+/* GRAFICA PACIENTES */
+
+function actualizarGraficaPacientes(){
+
+let estados={
+"En proceso":0,
+"Ayuda completada":0,
+"Cita agendada":0,
+"Espera":0
+};
+
+pacientes.forEach(p=>{
+
+if(estados[p.estado]!=undefined){
+estados[p.estado]++;
+}
+
+});
+
+if(chartPacientes) chartPacientes.destroy();
+
+chartPacientes = new Chart(
+document.getElementById("chartPacientes"),
+{
+
+type:"doughnut",
+
+data:{
+labels:Object.keys(estados),
+
+datasets:[{
+data:Object.values(estados),
+backgroundColor:[
+"#1d4ed8",
+"#2563eb",
+"#06b6d4",
+"#0f172a"
+]
+}]
+},
+
+options:{
+responsive:true
+}
+
+});
+
+}
+
+/* EXCEL */
+
+function descargarExcel(){
+
+let ws =
+XLSX.utils.json_to_sheet(pacientes);
+
+let wb =
+XLSX.utils.book_new();
+
+XLSX.utils.book_append_sheet(
+wb,
+ws,
+"Pacientes"
+);
+
+XLSX.writeFile(
+wb,
+"pacientes.xlsx"
+);
+
+}
+
+/* IMPRIMIR */
+
+function imprimirTabla(){
+window.print();
+}
+
+/* MODO OSCURO */
+
+function modoOscuro(){
+
+dark=!dark;
+
+if(dark){
+
+document.body.style.background="#020617";
+
+document.querySelectorAll(".card")
+.forEach(c=>{
+
+c.style.background="#0f172a";
+c.style.color="white";
+
+});
+
+}else{
+
+document.body.style.background="#edf2f7";
+
+document.querySelectorAll(".card")
+.forEach(c=>{
+
+c.style.background="white";
+c.style.color="#0f172a";
+
+});
+
+}
+
+}
+
+/* BACKUP */
+
+
+/* ANEXOS */
+function subirImagen(){
+
+let archivo = document.getElementById("archivo").files[0];
+let nombre = document.getElementById("nombreImagen").value.trim();
+let identidad = document.getElementById("identidadImagen").value.trim();
+
+if(!archivo){
+alert("Selecciona una imagen");
+return;
+}
+
+if(nombre === ""){
+alert("Ingresa el nombre del paciente");
+return;
+}
+
+if(identidad === ""){
+alert("Ingresa la identidad");
+return;
+}
+
+// buscar paciente real
+let paciente = pacientes.find(p => 
+(p.nombre || "").toLowerCase() === nombre.toLowerCase() &&
+(p.identidad || "") === identidad
+);
+
+if(!paciente){
+alert("❌ Nombre o identidad incorrectos");
+return;
+}
+
+let reader = new FileReader();
+
+reader.onload = function(e){
+
+imagenes.push({
+imagen: e.target.result,
+nombre: paciente.nombre,
+id: paciente.identidad
+});
+
+
+localStorage.setItem("imagenes", JSON.stringify(imagenes));
+
+mostrarImagenes();
+
+// limpiar
+document.getElementById("archivo").value="";
+document.getElementById("nombreImagen").value="";
+document.getElementById("identidadImagen").value="";
+
+alert("✅ Imagen subida correctamente");
+
+};
+
+reader.readAsDataURL(archivo);
+
+}
+function eliminarImagen(index){
+
+if(confirm("¿Eliminar esta imagen?")){
+
+imagenes.splice(index,1);
+
+localStorage.setItem(
+"imagenes",
+JSON.stringify(imagenes)
+);
+
+mostrarImagenes();
+
+alert("🗑️ Imagen eliminada");
+
+}
+
+}
+function mostrarImagenes(){
+
+let galeria = document.getElementById("galeria");
+
+galeria.innerHTML="";
+
+imagenes.forEach((img,index)=>{
+
+galeria.innerHTML += `
+
+<div class="imagen-card">
+
+<img
+src="${img.imagen}"
+onclick="verImagen('${img.imagen}')"
+title="${img.nombre}"
+>
+
+<h4>👤 ${img.nombre}</h4>
+
+<button class="btn info"
+style="width:100%; margin-bottom:5px;"
+onclick="irAPaciente('${img.id}')">
+Ver información
+</button>
+
+<button class="btn danger"
+style="width:100%;"
+onclick="eliminarImagen(${index})">
+Eliminar
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+function irAPaciente(id){
+
+// ir a sección pacientes
+show('pacientes');
+
+// esperar que cargue la tabla
+setTimeout(()=>{
+
+let filas = document.querySelectorAll("#tabla tbody tr");
+
+// limpiar colores anteriores
+filas.forEach(f => f.style.background = "");
+
+// buscar fila
+filas.forEach(fila => {
+
+let celdaID = fila.children[2].innerText;
+
+if(celdaID == id){
+
+// 🔵 resaltar fila
+fila.classList.add("destacado");
+
+// scroll automático
+fila.scrollIntoView({
+  behavior:"smooth",
+  block:"center"
+});
+
+// quitar efecto después
+setTimeout(()=>{
+  fila.classList.remove("destacado");
+},3000);
+
+}
+
+});
+
+},300);
+
+}
+
+
+function buscarPacientePorID(id){
+
+show('pacientes');
+
+setTimeout(() => {
+
+let filas = document.querySelectorAll("#tabla tbody tr");
+
+// limpiar antes
+filas.forEach(f => {
+f.classList.remove("destacado");
+});
+
+filas.forEach(fila => {
+
+let celdaID = fila.children[2].innerText.trim();
+
+if(celdaID == id){
+
+// ✨ aplicar clase PRO
+fila.classList.add("destacado");
+
+// 🔽 scroll automático
+fila.scrollIntoView({
+behavior:"smooth",
+block:"center"
+});
+
+// ⏳ quitar después
+setTimeout(()=>{
+fila.classList.remove("destacado");
+},3000);
+
+}
+
+});
+
+},400);
+
+}
+
+function verImagen(img){
+
+document.getElementById("visor")
+.style.display="flex";
+
+document.getElementById("imgGrande")
+.src=img;
+
+}
+
+document.getElementById("visor")
+.onclick=function(){
+
+this.style.display="none";
+
+};
+
+/* INIT */
+
+mostrarImagenes();
+update();
+
+
+/* =========================
+   AURICULARES PRO
+========================= */
+
+let listaAuriculares =
+JSON.parse(localStorage.getItem("auriculares")) || [];
+
+let mesFiltroAuri = "";
+let filtroEstadoAuri = "";
+let chartAuri;
+
+/* FILTRO MES */
+
+function filtrarEstadoAuri(estado){
+
+filtroEstadoAuri = estado;
+
+mostrarAuriculares();
+
+}
+
+/* GUARDAR */
+
+function guardarAuricular(){
+
+const marca = document.getElementById("marcaAuri").value.trim();
+const modelo = document.getElementById("modeloAuri").value.trim();
+const serie = document.getElementById("serieAuri").value.trim();
+const paciente = document.getElementById("pacienteAuri").value.trim();
+const cantidad = document.getElementById("cantidadAuri").value;
+const fecha = document.getElementById("fechaIngresoAuri").value;
+const estado = document.getElementById("estadoAuri").value;
+const obs = document.getElementById("obsAuri").value.trim();
+
+if(!marca || !modelo || !serie){
+alert("Completa los campos");
+return;
+}
+
+let mes = fecha
+? new Date(fecha).getMonth()
+: "";
+
+listaAuriculares.push({
+marca,
+modelo,
+serie,
+paciente,
+cantidad,
+fecha,
+estado,
+obs,
+mes
+});
+
+console.log(listaAuriculares);
+
+localStorage.setItem(
+"auriculares",
+JSON.stringify(listaAuriculares)
+);
+
+/* LIMPIAR INPUTS */
+document.querySelectorAll("#auriculares input")
+.forEach(i => i.value = "");
+
+document.getElementById("estadoAuri").selectedIndex = 0;
+
+mostrarAuriculares();
+
+actualizarGraficaAuriculares(listaAuriculares);
+
+alert("✅ Auricular guardado correctamente");
+
+}
+/* MOSTRAR */
+
+function mostrarAuriculares(){
+
+let tabla =
+document.getElementById("tablaAuriculares");
+
+tabla.innerHTML="";
+
+let bus =
+(document.getElementById("buscarAuricular").value || "")
+.toLowerCase();
+
+let lista = listaAuriculares.filter(a=>{
+
+let okBus =
+
+(a.marca || "").toLowerCase().includes(bus) ||
+(a.modelo || "").toLowerCase().includes(bus) ||
+(a.serie || "").toLowerCase().includes(bus) ||
+(a.paciente || "").toLowerCase().includes(bus);
+
+let okMes = true;
+
+if(mesFiltroAuri !== ""){
+okMes = a.mes == mesFiltroAuri;
+}
+
+let okEstado = true;
+
+if(filtroEstadoAuri !== ""){
+okEstado = a.estado == filtroEstadoAuri;
+}
+
+return okBus && okMes && okEstado;
+
+});
+/* KPIS */
+
+a1.innerText = lista.length;
+
+a2.innerText =
+lista.filter(a=>a.estado=="Disponible").length;
+
+a3.innerText =
+lista.filter(a=>a.estado=="Entregado").length;
+
+a4.innerText =
+lista.filter(a=>a.estado=="Mantenimiento").length;
+
+/* TABLA */
+
+lista.forEach((a)=>{
+
+let indexReal = listaAuriculares.indexOf(a);
+
+tabla.innerHTML += `
+
+<tr>
+
+<td contenteditable="true"
+onblur="editarAuri(${indexReal},'marca',this.innerText)">
+${a.marca || ""}
+</td>
+
+<td contenteditable="true"
+onblur="editarAuri(${indexReal},'modelo',this.innerText)">
+${a.modelo || ""}
+</td>
+
+<td contenteditable="true"
+onblur="editarAuri(${indexReal},'serie',this.innerText)">
+${a.serie || ""}
+</td>
+
+<td contenteditable="true"
+onblur="editarAuri(${indexReal},'paciente',this.innerText)">
+${a.paciente || ""}
+</td>
+
+<td>
+
+<select onchange="editarAuri(${indexReal},'estado',this.value)">
+
+<option value="Disponible"
+${a.estado=="Disponible"?"selected":""}>
+Disponible
+</option>
+
+<option value="Entregado"
+${a.estado=="Entregado"?"selected":""}>
+Entregado
+</option>
+
+<option value="Mantenimiento"
+${a.estado=="Mantenimiento"?"selected":""}>
+Mantenimiento
+</option>
+
+</select>
+
+</td>
+
+<td contenteditable="true"
+onblur="editarAuri(${indexReal},'cantidad',this.innerText)">
+${a.cantidad || ""}
+</td>
+
+<td>
+
+<input type="date"
+value="${a.fecha || ""}"
+onchange="editarAuri(${indexReal},'fecha',this.value)">
+
+</td>
+
+<td contenteditable="true"
+onblur="editarAuri(${indexReal},'obs',this.innerText)">
+${a.obs || ""}
+</td>
+
+<td>
+
+<button class="btn danger"
+onclick="eliminarAuricular(${indexReal})">
+Eliminar
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+actualizarGraficaAuriculares(lista);
+
+}
+/* EDITAR */
+
+function editarAuri(i,campo,valor){
+
+listaAuriculares[i][campo]=valor;
+
+localStorage.setItem(
+"auriculares",
+JSON.stringify(listaAuriculares)
+);
+
+actualizarGraficaAuriculares(listaAuriculares);
+
+mostrarAuriculares();
+
+}
+
+/* ELIMINAR */
+
+function eliminarAuricular(i){
+
+if(confirm("¿Eliminar auricular?")){
+
+listaAuriculares.splice(i,1);
+
+localStorage.setItem(
+"auriculares",
+JSON.stringify(listaAuriculares)
+);
+
+mostrarAuriculares();
+
+}
+
+}
+
+/* GRAFICA */
+
+function actualizarGraficaAuriculares(lista){
+
+const canvas = document.getElementById("graficaAuriculares");
+
+if(!canvas) return;
+
+lista = lista || listaAuriculares;
+
+let disponibles =
+lista.filter(a=>a.estado=="Disponible").length;
+
+let entregados =
+lista.filter(a=>a.estado=="Entregado").length;
+
+let mantenimiento =
+lista.filter(a=>a.estado=="Mantenimiento").length;
+
+if(chartAuri) chartAuri.destroy();
+
+chartAuri = new Chart(canvas,{
+
+type:"doughnut",
+
+data:{
+
+labels:[
+"Disponibles",
+"Entregados",
+"Mantenimiento"
+],
+
+datasets:[{
+
+data:[
+disponibles,
+entregados,
+mantenimiento
+],
+
+backgroundColor:[
+"#2563eb",
+"#16a34a",
+"#f59e0b"
+]
+
+}]
+
+},
+
+options:{
+responsive:true
+}
+
+});
+
+}
+/* EXCEL */
+
+function exportarAuricularesExcel(){
+
+let ws =
+XLSX.utils.json_to_sheet(listaAuriculares);
+
+let wb =
+XLSX.utils.book_new();
+
+XLSX.utils.book_append_sheet(
+wb,
+ws,
+"Auriculares"
+);
+
+XLSX.writeFile(
+wb,
+"auriculares.xlsx"
+);
+
+}
+
+/* IMPRIMIR */
+
+function imprimirAuriculares(){
+window.print();
+}
+
+window.onload = () => {
+update();
+mostrarImagenes();
+mostrarAuriculares();
+actualizarGraficaAuriculares(listaAuriculares);
+};
+
+
+</script>
+
+</body>
+</html> 
